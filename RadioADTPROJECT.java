@@ -9,16 +9,22 @@ package radio;
  *
  * @author cim111
  */
-public class Station 
-{
+public class RadioADTPROJECT {
 
- private int currentStation;
-    private int amMAX;
-    private int amMIN;
-
-    private double fmMAX;
-    private double fmMIN;
+    
+    public static void main(String[] args)
+    {
+    
+        
 
 
+
+
+
+
+
+
+
+    }
     
 }
