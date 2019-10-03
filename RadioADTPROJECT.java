@@ -17,8 +17,8 @@ public class RadioADTPROJECT {
     {
     RadioScanner station = new RadioScanner();
     station.setStation(870);
-    station.loadAMStations();
-    station.showAmStations();
+//    station.loadAMStations();
+//    station.showAmStations();
 
 
 
