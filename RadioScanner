@@ -1,0 +1,186 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package radio1;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.io.*;
+
+/**
+ *
+ * @author cim111
+ */
+public class RadioScanner
+{
+    private final Path amStationFile = Paths.get("amStations.txt");
+    private final Path fmStationFile = Paths.get("fmStations.txt");
+
+    private LLQueue<Integer> amStations = new LLQueue<>();
+    private LLQueue<Double> fmStations = new LLQueue<>();
+
+    private Frequency frequency;
+    private final int amMIN = 570;
+    private final int amMAX = 1610;
+    private final int amInc = 10;
+    private int currentAM;
+    
+    private final double fmInc = 0.2;
+    private final double fmMIN = 87.9;
+    private final double fmMAX = 107.9;
+    private double currentFM;
+    
+    protected RadioScanner(){
+        frequency = Frequency.AM;
+    }
+    
+    protected RadioScanner(Frequency f){
+        super();
+        frequency = f;
+    }
+    
+    public int tuneUp(int station){
+                if (station >= amMAX){
+                    station = amMIN;
+                }else{
+                    station += amInc;
+                }return station;
+        }
+    
+    public double tuneUp(double station){
+                if (station >= fmMAX){
+                    station = fmMIN;
+                }else{
+                    station += fmInc;
+                }
+                return station;
+        }
+        
+    protected int tuneDown(int station){
+        
+                if (station >= amMIN){
+                    station = amMAX;
+                }else {
+                    station -= amInc;
+                }
+                return station;
+        }
+    protected double tuneDown(double station){
+            
+                if(station >= fmMIN){
+                    station = fmMAX;
+                }else{
+                    station -= fmInc;
+                }
+                return station;
+        }
+        
+    public int seekUp(int station){
+        
+                LLNode<Integer> nextAM = amStations.returnHead();
+                station = nextAM.getElement();
+                while(station >= nextAM.getElement() && nextAM.hasNext()){
+                    nextAM = nextAM.getNext();
+                    if(nextAM.getElement() > currentAM){
+                        station = nextAM.getElement();
+                    }       
+                }return station;
+    }
+                
+    public double seekUp(double station){
+                
+                LLNode<Integer> nextFM = fmStations.returnHead();
+                station = nextFM.getElement();
+                while(currentFM >= nextFM.getElement()){
+                    nextFM = nextFM.getNext();
+                    if(nextFM.getElement() > currentFM){
+                        station = nextFM.getElement();
+                    }
+                }
+                return station;
+        }
+        
+            
+        
+    public int seekDown(int station){
+        
+                LLNode<Integer> nextAM = amStations.returnHead();
+                if(station <= nextAM.getElement()){
+                    station = amStations.last();
+                }else{
+                    while(station >= nextAM.getElement()){
+                        station = nextAM.getElement();
+                        nextAM.getNext();
+                    }
+                }
+                return station;
+                
+    }
+                
+    public double seekDown(double station){
+                LLNode<Integer> nextFM = fmStations.returnHead();
+                if(station <= nextFM.getElement()){
+                    station = fmStations.last();
+                }else{
+                    while(station >= nextFM.getElement()){
+                        station = nextFM.getElement();
+                        nextFM.getNext();
+                    }
+                }
+                return station;
+        }
+    
+    public int setStation(int station){
+        if(station < amMIN || station > amMAX || station%10 != 0){
+            station = amMIN;
+        }
+        return station;
+    
+    }
+    public double setStation(double station){
+        if(station < fmMIN || station > fmMAX || (station*10)/2 == 0){
+            station = fmMIN;
+        }
+        return station;
+    }
+    /*public void toggleFreq(){
+        if (frequency == Frequency.AM){
+            frequency = Frequency.FM;
+        }else{
+            frequency = Frequency.AM;
+        }
+    }*/
+public void loadAMStations()throws IOException{
+        try{
+            Scanner scan = new Scanner(amStationFile);
+            while(scan.hasNext()){
+                amStations.enqueue(scan.nextInt());
+            }
+        }catch (FileNotFoundException e){
+            
+        }
+    }
+public void loadFMStations()throws IOException{
+        try{
+            Scanner scan = new Scanner(fmStationFile);
+            while(scan.hasNext()){
+                fmStations.enqueue(scan.nextDouble());
+            }
+        }catch (FileNotFoundException e){
+            
+        }
+    }
+public String showAmStations(){
+    return amStations.toString();
+}
+
+    public Frequency getFreq(){
+        return frequency;
+    }
+    
+}
